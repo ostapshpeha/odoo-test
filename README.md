@@ -134,3 +134,4 @@ docker compose down -v
 ![Screenshot 3](screenshots/Screenshot_8.png)
 ![Screenshot 4](screenshots/Screenshot_9.png)
 ![Screenshot 5](screenshots/Screenshot_10.png)
+![Screenshot 6](screenshots/Screenshot_11.png)
