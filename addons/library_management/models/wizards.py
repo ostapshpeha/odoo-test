@@ -1,11 +1,68 @@
-from odoo import models, fields, api
+# -*- coding: utf-8 -*-
+from odoo import models, fields
 
 
 class RentWizard(models.TransientModel):
-    _name = "library.rent.wizard"
-    partner_id = fields.Many2one("res.partner", string="Partner")
+    """Transient (wizard) model за видачу книги читачеві.
 
-    def action_create(self):
+    Записи TransientModel є тимчасовими: Odoo автоматично видаляє їх
+    після настроюваного періоду (за замовчуванням 24 години).  Вони ідеально підходять для
+    багатокрокові діалоги або форми, які збирають дані перед виконанням
+    дії, бо вони не засоряють базу даних у довгостроковій перспективі.
+
+    Правила:
+        1. Бібліотекар відкриває запис книги та клацає «Опублікувати книгу».
+        2. Odoo створює порожній RentWizard із попередньо заповненим book_id
+           (передається через context['default_book_id'] у Book.action_open_rent_wizard).
+        3. Бібліотекар обирає читача (partner_id) і натискає «Підтвердити».
+        4. action_confirm() створює запис library.rent і позначає
+           книгу як недоступна.
+    """
+
+    _name = "library.rent.wizard"
+    _description = "Rent Book Wizard"
+
+    # Книга яку орендують
+    book_id = fields.Many2one(
+        comodel_name="library.book",
+        string="Book",
+        required=True,
+    )
+
+    # Читач
+    partner_id = fields.Many2one(
+        comodel_name="res.partner",
+        string="Reader",
+        required=True,
+    )
+
+    def action_confirm(self):
+        """Створити запис оренди і позначити книгу як неактивна.
+
+        Кроки:
+            1. Валідація, що лише один візард в обробці
+               (ensure_one raises an error if called on a multi-record set).
+            2. Створити library.rent запис який привязую читача до книги.
+               rent_date автозаповнення.
+            3. Позначити is_available = False
+            4. Повернути 'перезавантажену' дію клієнта, то ж форма зміниться
+               і кнопка 'Publish book' зникне
+        Returns:
+            dict: Odoo client action that reloads the current view.
+        """
+        # Валідація що цей метод викликається на один запис а не сет записів
+        self.ensure_one()
+
+        # Крок 1 створити запис
         self.env["library.rent"].create(
-            {"partner_id": self.partner_id.id, "is_available": False}
+            {
+                "book_id": self.book_id.id,
+                "partner_id": self.partner_id.id,
+            }
         )
+
+        # Крок 2 : Позначити книгу недоступною
+        self.book_id.is_available = False
+
+        # Крок 3: Оновити форму і UI зміниться
+        return {"type": "ir.actions.client", "tag": "reload"}
