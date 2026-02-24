@@ -126,3 +126,11 @@ To also remove all stored data (database, filestore):
 ```bash
 docker compose down -v
 ```
+
+## Screenshots
+
+![Screenshot 1](screenshots/Screenshot_6.png)
+![Screenshot 2](screenshots/Screenshot_7.png)
+![Screenshot 3](screenshots/Screenshot_8.png)
+![Screenshot 4](screenshots/Screenshot_9.png)
+![Screenshot 5](screenshots/Screenshot_10.png)
