@@ -62,7 +62,15 @@ class RentWizard(models.TransientModel):
         )
 
         # Крок 2 : Позначити книгу недоступною
-        self.book_id.is_available = False
+        self.book_id.write({"is_available": "false"})
 
-        # Крок 3: Оновити форму і UI зміниться
-        return {"type": "ir.actions.client", "tag": "reload"}
+        # Крок 3: Явно відкрити форму книги, щоб клієнт отримав свіжі дані з БД.
+        # (reload не завжди спрацьовує при поверненні з модального діалогу)
+        return {
+            "type": "ir.actions.act_window",
+            "res_model": "library.book",
+            "res_id": self.book_id.id,
+            "view_mode": "form",
+            "views": [(False, "form")],
+            "target": "current",
+        }

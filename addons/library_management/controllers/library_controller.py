@@ -62,7 +62,7 @@ class LibraryController(http.Controller):
                     "published_date": (
                         str(book.published_date) if book.published_date else None
                     ),
-                    "is_available": book.is_available,
+                    "is_available": book.is_available == "true",
                 }
             )
 

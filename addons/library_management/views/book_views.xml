@@ -46,7 +46,7 @@
                         string="Publish book"
                         type="object"
                         class="oe_highlight"
-                        invisible="not is_available"
+                        invisible="is_available != 'true' or not id"
                     />
                 </header>
                 <sheet>

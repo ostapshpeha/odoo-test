@@ -22,9 +22,12 @@ class Book(models.Model):
     # Офіційна дата публікації
     published_date = fields.Date(string="Publication Date")
 
-    # Прапорець - доступність
-    # По замовчуванню - True, як тільки книгу додають на стелаж
-    is_available = fields.Boolean(string="Is Available", default=True)
+    # Доступність книги: "true" / "false" замість чекбоксу
+    is_available = fields.Selection(
+        [("true", "True"), ("false", "False")],
+        string="Is Available",
+        default="true",
+    )
 
     def action_open_rent_wizard(self):
         """Відкриваємо візарда 'RentBook' в діалоговому вікні.
@@ -86,6 +89,21 @@ class Rent(models.Model):
     # Кінець оренди
     # Залишити порожньою (False) поки книга не повернута.
     return_date = fields.Date(string="Return Date")
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        records = super().create(vals_list)
+        for record in records:
+            if not record.return_date:
+                record.book_id.write({"is_available": "false"})
+        return records
+
+    def write(self, vals):
+        result = super().write(vals)
+        if vals.get("return_date"):
+            for record in self:
+                record.book_id.write({"is_available": "true"})
+        return result
 
     # --- Constraints ---
 
