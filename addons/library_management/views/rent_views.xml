@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!--
+        LIST (tree) VIEW for library.rent
+    -->
+    <record id="view_library_rent_list" model="ir.ui.view">
+        <field name="name">library.rent.list</field>
+        <field name="model">library.rent</field>
+        <field name="arch" type="xml">
+            <list string="Rentals">
+                <!-- The reader who borrowed the book -->
+                <field name="partner_id"/>
+                <!-- Which book was rented -->
+                <field name="book_id"/>
+                <!-- When the rental started (set automatically to today) -->
+                <field name="rent_date"/>
+                <!-- When the book was returned; empty = still out -->
+                <field name="return_date"/>
+            </list>
+        </field>
+    </record>
+
+    <!--
+        FORM VIEW for library.rent
+    -->
+    <record id="view_library_rent_form" model="ir.ui.view">
+        <field name="name">library.rent.form</field>
+        <field name="model">library.rent</field>
+        <field name="arch" type="xml">
+            <form string="Book Rental">
+                <sheet>
+                    <group>
+                        <!-- Select the reader from the partner list -->
+                        <field name="partner_id"/>
+                        <!-- Select the book being rented -->
+                        <field name="book_id"/>
+                        <!--
+                            rent_date is readonly because it is set automatically
+                            to today when the record is created (default=fields.Date.today).
+                            Allowing edits could lead to incorrect audit trails.
+                        -->
+                        <field name="rent_date" readonly="1"/>
+                        <!--
+                            return_date is empty until the book is physically
+                            returned.  The librarian fills this in manually.
+                        -->
+                        <field name="return_date"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+</odoo>
