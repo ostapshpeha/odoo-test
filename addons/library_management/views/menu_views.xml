@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!--
+        WINDOW ACTIONS
+        Each action defines which model to open, which views to show,
+        and in what order (list first so users see an overview before
+        drilling into a single record).
+    -->
+
+    <!-- Action: open the Books catalogue -->
+    <record id="action_library_book" model="ir.actions.act_window">
+        <field name="name">Books</field>
+        <field name="res_model">library.book</field>
+        <!-- Show list first, then allow opening a single record in form view -->
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Action: open the Rentals log -->
+    <record id="action_library_rent" model="ir.actions.act_window">
+        <field name="name">Rentals</field>
+        <field name="res_model">library.rent</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!--
+        MENU ITEMS
+        Three levels:
+            1. Root menu  — "Library" (top-level app entry)
+            2. Books      — leads to the book catalogue
+            3. Rentals    — leads to the rental log
+    -->
+
+    <!-- Root menu entry — appears in the home/app menu -->
+    <menuitem
+        id="menu_library_root"
+        name="Library"
+        sequence="10"
+    />
+
+    <!-- Sub-menu: Books catalogue -->
+    <menuitem
+        id="menu_library_books"
+        name="Books"
+        parent="menu_library_root"
+        action="action_library_book"
+        sequence="10"
+    />
+
+    <!-- Sub-menu: Rental records -->
+    <menuitem
+        id="menu_library_rents"
+        name="Rentals"
+        parent="menu_library_root"
+        action="action_library_rent"
+        sequence="20"
+    />
+
+</odoo>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!--
+        FORM VIEW for library.rent.wizard
+        This view is displayed in a modal dialog (target='new') when the
+        librarian clicks 'Publish book' on the book form.
+
+        The book_id field is hidden here because it is pre-filled from context
+        (the librarian already knows which book they want to rent out).
+        Only partner_id needs to be chosen interactively.
+    -->
+    <record id="view_library_rent_wizard_form" model="ir.ui.view">
+        <field name="name">library.rent.wizard.form</field>
+        <field name="model">library.rent.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Publish Book">
+                <group>
+                    <!--
+                        The reader selection — the only field the librarian
+                        needs to fill in, since the book is already known.
+                    -->
+                    <field name="partner_id"/>
+                </group>
+                <footer>
+                    <!--
+                        'Confirm' calls RentWizard.action_confirm():
+                            - creates the library.rent record
+                            - marks the book as unavailable
+                            - reloads the book form
+                    -->
+                    <button
+                        name="action_confirm"
+                        string="Confirm"
+                        type="object"
+                        class="btn-primary"
+                    />
+                    <!-- 'Cancel' discards the wizard without making any changes -->
+                    <button
+                        string="Cancel"
+                        class="btn-secondary"
+                        special="cancel"
+                    />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

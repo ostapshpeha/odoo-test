@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!--
+        LIST (tree) VIEW for library.book
+        Shows all books in a tabular format with key fields visible at a glance.
+        Users can sort/filter by any column and click a row to open the form view.
+    -->
+    <record id="view_library_book_list" model="ir.ui.view">
+        <field name="name">library.book.list</field>
+        <field name="model">library.book</field>
+        <field name="arch" type="xml">
+            <list string="Books">
+                <!-- Book title — most important identifier -->
+                <field name="name"/>
+                <!-- Author — useful for quick scanning of the catalogue -->
+                <field name="author"/>
+                <!-- Publication date — helps distinguish editions -->
+                <field name="published_date"/>
+                <!-- Availability flag — librarians check this before renting -->
+                <field name="is_available"/>
+            </list>
+        </field>
+    </record>
+
+    <!--
+        FORM VIEW for library.book
+        Detailed single-record view.  The header contains the 'Publish book'
+        button that opens the rental wizard; it is hidden when the book is
+        already out (is_available = False) to prevent double-renting.
+    -->
+    <record id="view_library_book_form" model="ir.ui.view">
+        <field name="name">library.book.form</field>
+        <field name="model">library.book</field>
+        <field name="arch" type="xml">
+            <form string="Book">
+                <header>
+                    <!--
+                        'Publish book' button — visible only when the book is
+                        available (is_available = True).
+                        Calls Book.action_open_rent_wizard() which opens the
+                        library.rent.wizard in a modal dialog.
+                    -->
+                    <button
+                        name="action_open_rent_wizard"
+                        string="Publish book"
+                        type="object"
+                        class="oe_highlight"
+                        invisible="not is_available"
+                    />
+                </header>
+                <sheet>
+                    <group>
+                        <!-- Mandatory title of the book -->
+                        <field name="name"/>
+                        <!-- Optional author name -->
+                        <field name="author"/>
+                        <!-- Optional publication date -->
+                        <field name="published_date"/>
+                        <!--
+                            Availability is managed automatically by the wizard
+                            (set to False on rent, should be set to True on return).
+                            readonly=1 prevents accidental manual edits.
+                        -->
+                        <field name="is_available" readonly="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+</odoo>
